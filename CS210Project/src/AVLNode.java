@@ -5,5 +5,4 @@ public class AVLNode {
     private SList List;
     private AVLNode left;
     private AVLNode right;
-    // TEST
 }
