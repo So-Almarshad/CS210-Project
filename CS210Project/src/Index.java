@@ -3,7 +3,7 @@ public class Index {
     private AVLNode root;
     private int size;
     
-    public Index(){// sheek 3ala line 75 to 82 for Node class , lines 94 106 
+    public Index(){// sheek 3ala line 75 to 82 for Node class , lines 94 106 142 150 155
         this.root = null;
         this.size = 0;// enta lazem t3el 3lehom
     }
@@ -120,4 +120,74 @@ public class Index {
             return node; //found
         }
     }//Block 11
+    public void Remove(String token){
+        root = remove(root, token);
+    }
+
+    private AVLNode remove(AVLNode node, String token) {
+        if (node == null) {
+            return null; // tok not found
+        }
+        int campores = token.compareTo(node.token);
+        if (campores <0) {//s left
+            return remove(node.left,token);
+        }else if(campores <0){//s right
+            return remove(node.right,token);
+        }else{// found then
+            size--;
+            //System.out.println("Removing node: "+node.token);
+            if (node.left ==null || node.right == null) {
+                AVLNode temp = (node.left !=null) ? node.left :node.right;
+                if (temp == null) {
+                    node == null; // no child
+                }else{
+                    node = temp;
+                }
+            }else{
+                AVLNode temp = minValueNode(node.right);
+                node.token = temp.token;
+                node.frequency = temp.frequency;
+                node.list = temp.list;
+                node.right = remove(node.right,temp.token);
+            }
+        }
+        if (node == null)return null;
+        
+        //updating heihgt & balance
+        node.height = Math.max(height(node.left), height(node.right)) + 1;
+        return balance(node);
+    }
+    public String Traverse(){
+        StringBuilder result = new StringBuilder();
+        postOrderTravesal(root, result);
+        return result.toString().trim();
+    }
+    private void postOrderTravesal(AVLNode node, StringBuilder result){
+        if(node != null){
+            postOrderTravesal(node.left, result);  // left subtree
+            postOrderTravesal(node.right, result); // right subtree
+            result.append(node.token).append(" "); //cuurrent node
+        }
+    }
+    private AVLNode minValueNode(AVLNode node){
+        AVLNode current = node;
+        while(current.left != null){
+            current = current.left;
+        }
+        return current;
+    }
+    public boolean isEmpty(){
+        return size == 0;
+    }
+    public int getSize(){
+        return size;
+    }
+    public void clear(){
+        root = null;
+        size = 0;
+    }
+    @Override
+    public String toString(){
+        return "Index{ size = "+size+", height = "+(root != null ? root.height : 0)+" } ";
+    }
 }
