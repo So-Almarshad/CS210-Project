@@ -105,7 +105,15 @@ public class AVLNode implements Comparable<AVLNode>{
         return this.token.compareTo(othe) > 0 ;
     }
     */
-    
+    public void copyVal(AVLNode node){
+        //copy values of node into calling node
+        this.SLL=node.SLL;
+        this.frequency=node.frequency;
+        this.height=node.height;
+        this.left=node.left;
+        this.right=node.right;
+        this.token=node.token;
+    }
     @Override
     public String toString() {
         return "AVLNode{ Token = " + token + ", Height = " + height + ", Frequency = " + frequency + '}';

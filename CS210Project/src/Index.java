@@ -26,20 +26,15 @@ public class Index {
     }
 
     /*METHODS*/
-    /*
-    Useless method can get the height of node using n.getHeight()
-    private int height(AVLNode n){
-        if (n == null) {
-            return 0;
-        }
-        return n.getHeight();
-    }*/
     private int getBalance(AVLNode node){
+        //method to check the heights of two children
             if (node == null) {
                 return 0;
             }
             // if result is negative then the difference is to the right. Vice versa
-            return node.getLeft().getHeight()-node.getRight().getHeight();
+            int leftHeight = (node.left != null) ? node.left.getHeight() : 0;
+            int rightHeight = (node.right != null) ? node.right.getHeight() : 0;
+            return leftHeight - rightHeight;
     }
 
     private AVLNode rotateRight(AVLNode y){
@@ -50,21 +45,21 @@ public class Index {
         x.right = y;
         y.left = T2;
         
-        y.height = Math.max(height(y.left), height(y.right)) + 1;
-        x.height = Math.max(height(x.left), height(x.right)) + 1;
+        y.updHeight();
+        x.updHeight();
         
         return x;
     }
     private AVLNode rotateLeft(AVLNode x){
-        //System.out.println("Rotating Right around: "+ y.getToken());
-        AVLNode y = x.left;
-        AVLNode T2 = y.right;
+        //System.out.println("Rotating Left around: "+ x.getToken());
+        AVLNode y = x.right;
+        AVLNode T2 = y.left;
         
         y.left = x;
         x.right = T2;
         
-        x.height = Math.max(height(x.left), height(x.right))+ 1;
-        y.height = Math.max(height(y.left), height(y.right))+ 1;
+        x.updHeight();
+        y.updHeight();
         
         return y;
     }
@@ -74,53 +69,35 @@ public class Index {
         if(no == null)
             return null;
         int balanceFactor = getBalance(no);
-        //LL
-        if(balanceFactor>1 && getBalance(no.left) >= 0)
+        //LL - Left Left Case
+        if(balanceFactor > 1 && getBalance(no.left) >= 0)
             return rotateRight(no);
-        //LR
-        if(balanceFactor>1 && getBalance(no.left) < 0)
+        //LR - Left Right Case (double rotation)
+        if(balanceFactor > 1 && getBalance(no.left) < 0){
+            no.left = rotateLeft(no.left);
             return rotateRight(no);
-        //RR
-        if(balanceFactor>-1 && getBalance(no.right) <= 0)
+        }
+        //RR - Right Right Case
+        if(balanceFactor < -1 && getBalance(no.right) <= 0)
             return rotateLeft(no);
-        //RL
-        if(balanceFactor>-1 && getBalance(no.right) > 0)
+        //RL - Right Left Case (double rotation)
+        if(balanceFactor < -1 && getBalance(no.right) > 0){
+            no.right = rotateRight(no.right);
             return rotateLeft(no);
+        }
         return no;
     }
     
-    /*public void Insert(String token, String filename, int lineNumber) {
-        root = insert(root, token, filename, lineNumber);
-    }
-    
-    private AVLNode insert(AVLNode node, String token, String filename, int lineNumber){
-        if (node === null) {//finding the free place,and create new
-            AVLNode newNode = new AVLNode(token);
-            newNode.list.Insert(filename, lineNumber);
-            newNode.frequency =1;
-            size++;
-            //System.out.println("Created new node for: "+token);
-            return newNode;
-        }
-        int comparizon = token.compareTo(node.token);//deciding right or left
-        if (comparizon < 0 ) {//left token smaller
-            node.left = insert(node.left, token, filename, lineNumber);
-        }else if (comparizon > 0){//right token larger
-            node.right = insert(node.right, token , filename, lineNumber);
-        }else{//updating frequency & list, token is already there
-            node.list.Insert(filename, lineNumber);
-            node.frequency++;
-            //System.out.println("Updated existing node: "+token + ", frequency: "+node.frequency);
-            return node;
-        }
-        node.height= Math.max(height(node.left), height(node.right))+1;//height ++
-        return balance(node);
-    }*/
     
     public boolean insert(AVLNode node){
         //Update heights
         try {
-            insert(node,this.getRoot());
+            AVLNode temp=this.search(root, node.getToken());
+            if (temp!=null) {
+                temp.incFreq();
+                return true;
+            }
+            root=insert(node, root);
             size++;
             return true;
         } catch (Exception e) {
@@ -128,7 +105,23 @@ public class Index {
             return false;
         }
     }
-    
+    public AVLNode insert (AVLNode newNode, AVLNode treeNode){
+        if (treeNode==null) {
+            return newNode;
+        }
+        if (newNode.compareTo(treeNode)<0) {
+            treeNode.left=insert(newNode, treeNode.left);
+        }
+        else if (newNode.compareTo(treeNode)>0) {
+            treeNode.right=insert(newNode, treeNode.right);
+        }
+        else
+            return treeNode;
+        treeNode.updHeight();
+        return balance(treeNode);
+    }
+
+    /* 
     public void insert(AVLNode newNode, AVLNode treeNode){
         if (newNode.compareTo(treeNode)<1) {
             if (treeNode.left==null) {
@@ -148,7 +141,7 @@ public class Index {
         }
         else
             treeNode.incFreq();
-    }
+    }*/
 
     public AVLNode Search(String token){
         AVLNode node = search(root, token);
@@ -163,25 +156,24 @@ public class Index {
             return null; //not found
         }
         
-        if (token.compareTo(node.getToken()) <0) {//s left
-            return search(node.left,token);
-        }else if(token.compareTo(node.getToken()) <0){//s right
-            return search(node.right,token);
-        }else{
+        if (token.compareTo(node.getToken()) < 0) {//go left
+            return search(node.left, token);
+        } else if(token.compareTo(node.getToken()) > 0) {//go right
+            return search(node.right, token);
+        } else {
             return node; //found
         }
     }
+    
     public boolean remove(String token){
-        //Update heights
         try {
-            AVLNode temp=remove(root, token);
-            if (temp!=null) {
+                if (search(root, token)==null) {
+                    System.out.println("Token not found, cannot delete");
+                    return false;
+                }
+                root=remove(root, token);
                 size--;
                 return true;
-            }
-            
-            System.out.println("Token not found");
-            return false;
         } catch (Exception e) {
             System.err.println("Unable to remove token");
             return false;
@@ -189,57 +181,57 @@ public class Index {
         
     }
 
-    private AVLNode remove(AVLNode node, String token) {
-        //Method needs some revision
-        if (node == null) {
-            return null; // token not found
+    private AVLNode remove(AVLNode node, String token){
+        if (node==null) {
+            return null;
         }
-        
-        if (token.compareTo(node.getToken()) <0) {//s left
-            return remove(node.left,token);
+        if (token.compareTo(node.getToken())<0) {
+            node.left=remove(node.left, token);
         }
-        else if(token.compareTo(node.getToken()) >0){//s right
-            return remove(node.right,token);
+        else if (token.compareTo(node.getToken())>0) {
+            node.right=remove(node.right,token);
         }
-        else{// Token found
+        else{
+            if (node.has1Child()) {
+                //1 children
+                if (node.left==null) {
+                    return node.right;
+                }
+                else
+                    return node.left;
+            }
             if (node.isLeaf()) {
-                node=null;
+                //0 children
+                return null;
             }
-            else if (node.has1Child()) {
-                AVLNode temp = (node.left !=null) ? node.left :node.right;
-                node=temp;
-            }
-            else{
-                AVLNode temp = minValueNode(node.right);
-                
-                node.setToken(temp.getToken());
-                node.setFrequency(temp.getFrequency());
-                node.setSLL(temp.getSLL());
-                node.right = remove(node.right,temp.getToken());
-            }
+            //2 children
+            node.copyVal(this.minValueNode(node.right));
+            node.right=remove(node.right, node.getToken());
         }
-        
-        
-        //updating heihgt & balance
-        node.height = Math.max(height(node.left), height(node.right)) + 1;
+        node.updHeight();
         return balance(node);
     }
 
-    public String Traverse(){
-        StringBuilder result = new StringBuilder();
-        postOrderTravesal(root, result);
-        return result.toString().trim();
-    }
 
-    private void postOrderTravesal(AVLNode node, StringBuilder result){
-        if(node != null){
-            postOrderTravesal(node.left, result);  // left subtree
-            postOrderTravesal(node.right, result); // right subtree
-            result.append(node.token).append(" "); //cuurrent node
+    public void traverse(){
+        if (isEmpty()) {
+            return;
+        }
+        AVLNode iterator=root;
+        traverse(iterator);
+    }
+    
+    public void traverse(AVLNode node){
+        //post order traversal
+        if (node!=null) {
+            traverse(node.left);
+            traverse(node.right);
+            System.out.println(node);   
         }
     }
 
     private AVLNode minValueNode(AVLNode node){
+        //method to find the smallest value child of this node
         AVLNode current = node;
         while(current.left != null){
             current = current.left;
@@ -248,7 +240,7 @@ public class Index {
     }
 
     public boolean isEmpty(){
-        return size == 0;
+        return size==0;
     }
     
     public void clear(){
@@ -258,8 +250,7 @@ public class Index {
 
     @Override
     public String toString(){
-        return "Index{ size = "+size+", height = "+(root != null ? root.height : 0)+" } ";
+        return "Index{ size = "+size+", height = "+(root != null ? root.getHeight() : 0)+" } ";
 
     }
-//AVL class
 }
