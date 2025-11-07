@@ -91,20 +91,7 @@ public class AVLNode implements Comparable<AVLNode>{
     public int compareTo(AVLNode o){//compare node's token to other token
         return this.token.compareToIgnoreCase(o.getToken());
     }
-    /* 
-    These methods are redundent compareTo is suffecient
-    public boolean matches(String ot){//node same same node??
-        return this.token.equals(ot);
-    }
-
-    public boolean isLess(String oth){//did the node come before another token alphabeticlly
-        return this.token.compareTo(oth) < 0 ;
-    }
-
-    public boolean isGreater(String othe){//did the node come after another token alphabeticlly
-        return this.token.compareTo(othe) > 0 ;
-    }
-    */
+    
     public void copyVal(AVLNode node){
         //copy values of node into calling node
         // Only copy the data, NOT the structure (left/right pointers)
