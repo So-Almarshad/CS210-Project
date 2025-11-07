@@ -40,7 +40,7 @@ public class SList {
         iterator=iterator.next;
       
       iterator.next=node;
-      this.size++;
+      size++;
       return true;
 
     } catch (Exception e) {
@@ -55,17 +55,18 @@ public class SList {
       //try and find the node before "node"
       while (!(iterator.next.equals(node))& iterator.next!=null)
         iterator=iterator.next;
-
-      if (iterator.next.equals(node)) {
-        //remove "node"
+      
+        
+      if (iterator.next==null) {
+        //node not found
+        return false;
+      }
+      //remove "node"
         iterator.next=iterator.next.next;
         this.size--;
         return true;
-      }
 
       //"node" not found
-      else
-        return false;
       
     } catch (Exception e) {
       System.err.println("Unnable to remove node in SLL");
@@ -82,7 +83,8 @@ public class SList {
       }
       iterator=iterator.next;
     }
-    return null;
+    return iterator.getFileName().equalsIgnoreCase(fileName) ? iterator : null;
+    
   }
 
   @Override

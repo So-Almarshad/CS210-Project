@@ -107,12 +107,11 @@ public class AVLNode implements Comparable<AVLNode>{
     */
     public void copyVal(AVLNode node){
         //copy values of node into calling node
+        // Only copy the data, NOT the structure (left/right pointers)
         this.SLL=node.SLL;
         this.frequency=node.frequency;
-        this.height=node.height;
-        this.left=node.left;
-        this.right=node.right;
         this.token=node.token;
+        // Do NOT copy height, left, or right - those should remain as is
     }
     @Override
     public String toString() {
