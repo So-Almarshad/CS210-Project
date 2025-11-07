@@ -16,6 +16,9 @@ public class Solution {
         String[] inputArr=sc.nextLine().split(" ");
         switch (inputArr[0]) {
           case "1":
+            if (Integer.parseInt(inputArr[1])>100000 || Integer.parseInt(inputArr[1])<1) {
+              throw new IllegalArgumentException();
+            }
             insert(inputArr,sc,tree);
             break;
           case "2":
@@ -25,6 +28,10 @@ public class Solution {
               remove(inputArr[1],tree);
             break;
           case "4":
+            if (tree.isEmpty()) {
+              System.out.println(-1);
+              break;
+            }
             tree.traverse();
             break;
           default:
@@ -78,6 +85,9 @@ public class Solution {
       System.out.println(-1);
     }
     else {
+      if (node.getFrequency()>100 || node.getFrequency()<1) {
+        throw new IllegalArgumentException();
+      }
       System.out.println(node.getFrequency());
       Node iterator=node.getSLL().getHead();
       while (iterator!=null){
@@ -92,8 +102,9 @@ public class Solution {
       return;
     }
     else
-      System.out.println(0);
+      System.out.println(-1);
       //Dr.Sayed said that for errors in remove 0 should be printed. Refrence Al Salem
+      //THE COMMENT IS FALSE
   }
 
 }

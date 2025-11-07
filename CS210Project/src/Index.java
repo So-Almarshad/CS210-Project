@@ -70,18 +70,18 @@ public class Index {
             return null;
         int balanceFactor = getBalance(no);
         //LL - Left Left Case
-        if(balanceFactor > 1 && getBalance(no.left) >= 0)
+        if(balanceFactor > 1 && no.left != null && getBalance(no.left) >= 0)
             return rotateRight(no);
         //LR - Left Right Case (double rotation)
-        if(balanceFactor > 1 && getBalance(no.left) < 0){
+        if(balanceFactor > 1 && no.left != null && getBalance(no.left) < 0){
             no.left = rotateLeft(no.left);
             return rotateRight(no);
         }
         //RR - Right Right Case
-        if(balanceFactor < -1 && getBalance(no.right) <= 0)
+        if(balanceFactor < -1 && no.right != null && getBalance(no.right) <= 0)
             return rotateLeft(no);
         //RL - Right Left Case (double rotation)
-        if(balanceFactor < -1 && getBalance(no.right) > 0){
+        if(balanceFactor < -1 && no.right != null && getBalance(no.right) > 0){
             no.right = rotateRight(no.right);
             return rotateLeft(no);
         }
@@ -168,14 +168,12 @@ public class Index {
     public boolean remove(String token){
         try {
                 if (search(root, token)==null) {
-                    System.out.println("Token not found, cannot delete");
                     return false;
                 }
                 root=remove(root, token);
                 size--;
                 return true;
         } catch (Exception e) {
-            System.err.println("Unable to remove token");
             return false;
         }
         
@@ -192,19 +190,19 @@ public class Index {
             node.right=remove(node.right,token);
         }
         else{
+            // Check if it's a leaf node first (0 children)
+            if (node.isLeaf()) {
+                return null;
+            }
+            // Check if it has 1 child
             if (node.has1Child()) {
-                //1 children
                 if (node.left==null) {
                     return node.right;
                 }
                 else
                     return node.left;
             }
-            if (node.isLeaf()) {
-                //0 children
-                return null;
-            }
-            //2 children
+            // Has 2 children - replace with inorder successor
             node.copyVal(this.minValueNode(node.right));
             node.right=remove(node.right, node.getToken());
         }
