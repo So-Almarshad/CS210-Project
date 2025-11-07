@@ -7,18 +7,7 @@ public class Solution {
    * the previous varriables as it's attributes. A SLL will be created if it wasn't already and this node
    * will be inserted.
    */
-  /* 
-  1 3
-  File1.txt 3
-  data structures are cool
-  algorithms are fun
-  this is a cool project
-  File2.txt 2
-  search the data
-  time is bubble
-  File3.txt 1
-  data in data is fun
-   */
+  
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
     Index tree= new Index();
@@ -103,11 +92,5 @@ public class Solution {
       System.out.println(0);
       //Dr.Sayed said that for errors in remove 0 should be printed. Refrence Al Salem
   }
-/*
-Output for current code:
-4
-File1.txt 1
-a algorithms bubble cool are is search project the time this structures data
-(MISSING fun)
- */
+
 }
