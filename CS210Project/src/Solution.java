@@ -60,6 +60,9 @@ public class Solution {
                   return;
                 }
                 existingNode = newNode;
+              } else {
+                // Token exists, increment frequency
+                existingNode.incFreq();
               }
               // Add file/line info to the node's SLL
               existingNode.getSLL().insert(new Node(fileName, j+1));
