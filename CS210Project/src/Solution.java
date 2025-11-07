@@ -11,7 +11,7 @@ public class Solution {
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
     Index tree= new Index();
-    while (true){
+    while (sc.hasNext()){
       try {
         String[] inputArr=sc.nextLine().split(" ");
         switch (inputArr[0]) {
