@@ -219,6 +219,7 @@ public class Index {
         }
         AVLNode iterator=root;
         traverse(iterator);
+        System.out.println();
     }
     
     public void traverse(AVLNode node){
@@ -226,7 +227,7 @@ public class Index {
         if (node!=null) {
             traverse(node.left);
             traverse(node.right);
-            System.out.println(node);   
+            System.out.print(node.getToken()+" ");   
         }
     }
 

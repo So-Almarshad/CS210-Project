@@ -6,6 +6,10 @@ public class SList {
     this.head=head;
     size=1;
   }
+  public SList(){
+    this.head=null;
+    size=0;
+  }
   /*GETTERS & SETTERS*/
   public int getSize() {
     return size;
@@ -25,6 +29,11 @@ public class SList {
   /*METHODS*/
   public boolean insert(Node node){
     try {
+      if (head==null) {
+        head=node;
+        size++;
+        return true;
+      }
       Node iterator=head;
       //go to last node
       while (iterator.next!=null) 

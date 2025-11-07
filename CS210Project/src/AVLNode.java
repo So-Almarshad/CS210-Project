@@ -19,8 +19,8 @@ public class AVLNode implements Comparable<AVLNode>{
     public AVLNode(String token){
         this.token=token;
         height=1; // Starting the node from h1
-        frequency=0; // Starting with 0 and increments
-        SLL=null;
+        frequency=1; // Starting with 1 and increments
+        SLL=new SList();
         left=null;// no children yet
         right=null;
     }
